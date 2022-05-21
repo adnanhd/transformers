@@ -449,9 +449,9 @@ class Trainer:
                 parallel_loader = pl.ParallelLoader(train_dataloader, [self.args.device]).per_device_loader(
                     self.args.device
                 )
-                epoch_iterator = tqdm(parallel_loader, desc="Iteration", disable=not self.is_local_master())
+                epoch_iterator = tqdm(parallel_loader, desc="Iteration", disable=not self.is_local_master(), file=open('pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
             else:
-                epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=not self.is_local_master())
+                epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=not self.is_local_master(), file=open('pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
 
             for step, inputs in enumerate(epoch_iterator):
 
