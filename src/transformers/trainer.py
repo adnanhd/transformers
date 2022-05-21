@@ -444,14 +444,15 @@ class Trainer:
         for epoch in train_iterator:
             if isinstance(train_dataloader, DataLoader) and isinstance(train_dataloader.sampler, DistributedSampler):
                 train_dataloader.sampler.set_epoch(epoch)
-
+        
+            import os; os.makedirs('log', exists_ok=True)
             if is_torch_tpu_available():
                 parallel_loader = pl.ParallelLoader(train_dataloader, [self.args.device]).per_device_loader(
                     self.args.device
                 )
-                epoch_iterator = tqdm(parallel_loader, desc="Iteration", disable=not self.is_local_master(), file=open('pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
+                epoch_iterator = tqdm(parallel_loader, desc="Iteration", disable=not self.is_local_master(), file=open('log/pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
             else:
-                epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=not self.is_local_master(), file=open('pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
+                epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=not self.is_local_master(), file=open('log/pbar.log', 'w'), bar_format='{n_fmt}/{total_fmt}')
 
             for step, inputs in enumerate(epoch_iterator):
 
